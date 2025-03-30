@@ -8,6 +8,7 @@ import IntegrationGrid from './components/IntegrationGrid';
 import Footer from './components/Footer';
 import IntegrationPermissions from './components/IntegrationPermissions';
 import IntegrationSuccess from './components/IntegrationSuccess';
+import IntegrationManagementPage from './components/IntegrationManagementPage';
 import { integrations, categories } from './data/integrations';
 import { integrationDetails } from './data/integrationDetails';
 import { Integration } from './types';
@@ -24,6 +25,7 @@ const App: React.FC = () => {
   const [installedIntegrations, setInstalledIntegrations] = useState<string[]>(
     integrations.filter(i => i.isInstalled).map(i => i.id)
   );
+  const [showIntegrationManagement, setShowIntegrationManagement] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -59,6 +61,14 @@ const App: React.FC = () => {
   const handleCloseSuccess = () => {
     setShowSuccess(false);
     setSelectedIntegration(null);
+  };
+
+  const handleManageIntegrations = () => {
+    setShowIntegrationManagement(true);
+  };
+
+  const handleBackToMarketplace = () => {
+    setShowIntegrationManagement(false);
   };
 
   useEffect(() => {
@@ -121,9 +131,30 @@ const App: React.FC = () => {
   const popularIntegrations = getUpdatedIntegrations(i => i.isPopular);
   const newIntegrations = getUpdatedIntegrations(i => i.isNew);
 
+  if (showIntegrationManagement) {
+    return (
+      <div className="min-h-screen bg-gray-50 font-nunito">
+        <Navbar 
+          toggleSidebar={toggleSidebar} 
+          isSidebarOpen={isSidebarOpen} 
+          onManageIntegrations={handleManageIntegrations}
+        />
+        <IntegrationManagementPage 
+          installedIntegrations={installedIntegrations} 
+          onBack={handleBackToMarketplace} 
+        />
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 font-nunito">
-      <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+      <Navbar 
+        toggleSidebar={toggleSidebar} 
+        isSidebarOpen={isSidebarOpen} 
+        onManageIntegrations={handleManageIntegrations}
+      />
       
       <div className="flex">
         <Sidebar 
