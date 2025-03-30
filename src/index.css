@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #4f46e5;
+  --primary-hover: #4338ca;
+  --secondary-color: #f3f4f6;
+  --secondary-hover: #e5e7eb;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  @apply text-gray-800 bg-gray-50;
+}
+
+.container-custom {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.card {
+  @apply bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 relative overflow-hidden;
+}
+
+.btn {
+  @apply px-4 py-2 rounded-md font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.btn-primary {
+  @apply bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500;
+}
+
+.btn-secondary {
+  @apply bg-gray-100 text-gray-800 hover:bg-gray-200 focus:ring-gray-500;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
