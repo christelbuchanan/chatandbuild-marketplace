@@ -1,68 +1,87 @@
-import React, { useEffect } from 'react';
-import { CheckCircle, X } from 'lucide-react';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { CheckCircle, X, ArrowRight } from 'lucide-react';
 import { Integration } from '../types';
-import * as LucideIcons from 'lucide-react';
+import { getLogoUrl } from '../services/logoService';
 
 interface IntegrationSuccessProps {
   integration: Integration;
-  onClose: () => void;
+  onComplete: () => void;
 }
 
-const IntegrationSuccess: React.FC<IntegrationSuccessProps> = ({ integration, onClose }) => {
-  const IconComponent = (LucideIcons as any)[integration.icon.charAt(0).toUpperCase() + integration.icon.slice(1)];
-  
-  // Auto-close after 5 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onClose();
-    }, 5000);
-    
-    return () => clearTimeout(timer);
-  }, [onClose]);
+const IntegrationSuccess: React.FC<IntegrationSuccessProps> = ({ 
+  integration, 
+  onComplete 
+}) => {
+  // Get the logo URL
+  const logoUrl = getLogoUrl(integration.id, integration.name);
   
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+    <motion.div 
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <motion.div 
+        className="bg-white rounded-lg shadow-xl max-w-md w-full"
+        initial={{ scale: 0.9, y: 20 }}
+        animate={{ scale: 1, y: 0 }}
+        exit={{ scale: 0.9, y: 20 }}
+      >
         <div className="p-6">
           <div className="flex justify-end">
             <button 
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-500"
+              onClick={onComplete}
+              className="text-gray-400 hover:text-gray-500 transition-colors"
             >
-              <X size={20} />
+              <X size={24} />
             </button>
           </div>
           
-          <div className="text-center">
-            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+          <div className="flex flex-col items-center text-center mb-6">
+            <div className="h-16 w-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
               <CheckCircle size={32} className="text-green-600" />
             </div>
             
-            <div className="flex items-center justify-center mb-4">
-              <div className="h-10 w-10 bg-gray-100 rounded-md flex items-center justify-center">
-                {IconComponent && <IconComponent size={20} className="text-gray-700" />}
-              </div>
-              <div className="ml-2 text-xl font-semibold text-gray-900">{integration.name}</div>
-            </div>
-            
-            <h2 className="text-lg font-medium text-gray-900 mb-2">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
               Successfully Connected!
             </h2>
-            <p className="text-sm text-gray-600 mb-6">
-              Your {integration.name} account has been successfully connected to ChatAndBuild.
-              You can now use all the features of this integration.
-            </p>
             
-            <button
-              onClick={onClose}
-              className="btn btn-primary w-full"
+            <p className="text-gray-600">
+              You have successfully connected {integration.name} to your account.
+            </p>
+          </div>
+          
+          <div className="bg-gray-50 p-4 rounded-lg mb-6 flex items-center">
+            <div className="h-12 w-12 bg-white rounded-md flex items-center justify-center overflow-hidden">
+              <img 
+                src={logoUrl} 
+                alt={`${integration.name} logo`} 
+                className="h-8 w-8 object-contain"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = 'https://via.placeholder.com/40?text=' + integration.name.charAt(0);
+                }}
+              />
+            </div>
+            <div className="ml-4">
+              <h3 className="font-medium text-gray-900">{integration.name}</h3>
+              <p className="text-sm text-gray-500">Integration is now active</p>
+            </div>
+          </div>
+          
+          <div className="space-y-4">
+            <button 
+              className="btn btn-primary w-full flex items-center justify-center"
+              onClick={onComplete}
             >
-              Got it
+              Continue to Marketplace <ArrowRight size={16} className="ml-2" />
             </button>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
